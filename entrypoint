@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+
+# Set environment variables
+export HOME="${BACKUP_DATA_DIR}"
+export PATH="${PATH}:`pwd`:${PATH}:`pwd`/script"
+echo "${HOME}" > "/etc/container_environment/HOME"
+echo "${PATH}" > "/etc/container_environment/PATH"
+
+# Check if we are triggering a single backup otherwise trigger a full initialization
+case "$1" in
+  "backup"|"trigger" )
+    # Extract the backup task argument and execute it
+    shift
+    command="trigger-backup.sh $@"
+    ;;
+  * )
+    command="$@"
+    ;;
+esac
+
+${command}
