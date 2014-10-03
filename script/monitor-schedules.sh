@@ -3,9 +3,10 @@ set -e
 
 # Set environment
 PATTERN='.*\.rb$'
-COMMAND='/opt/bin/create-schedule.sh'
+COMMAND='create-schedule.sh'
 
 # Load from existing schedules
+mkdir -p "${BACKUP_CONFIG_DIR}/schedules"
 echo "Loading existing schedules..."
 find "${BACKUP_CONFIG_DIR}/schedules" -regex "${PATTERN}" -exec sh -c "\"${COMMAND}\" \"{}\"" \;
 
