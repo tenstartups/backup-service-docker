@@ -14,8 +14,6 @@ MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 
 # Set environment variables.
 ENV DEBIAN_FRONTEND noninteractive
-ENV BACKUP_CONFIG_DIR /etc/backup-service
-ENV BACKUP_DATA_DIR /var/lib/backup-service
 
 # Regenerate SSH host keys. baseimage-docker does not contain any, so you
 # have to do that yourself. You may also comment out this instruction; the
@@ -84,14 +82,22 @@ RUN gem install activesupport backup rubygems-update whenever --no-ri --no-rdoc
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Add the entrypoint script
+# Add files to the container.
 ADD . /opt/backup-service
+
+# Move scripts into proper location.
+RUN \
+  mv /opt/backup-service/script /opt && \
+  mv /opt/script /opt/bin && \
+  mkdir -p /etc/service/schedule-updated && \
+  mv /opt/bin/schedule-updated.sh /etc/service/schedule-updated/run
+
+# Set environment
+ENV BACKUP_CONFIG_DIR /etc/backup-service
+ENV BACKUP_DATA_DIR /var/lib/backup-service
 
 # Define mountable directories.
 VOLUME ["/etc/backup-service", "/etc/schedule", "/var/lib/backup-service"]
-
-# Add the schedule update daemon to the managed services
-ADD /script/schedule-updated.sh /etc/service/scheduled/run
 
 # Define working directory.
 WORKDIR /opt/backup-service

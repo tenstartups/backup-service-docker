@@ -3,7 +3,7 @@ set -e
 
 # Set environment variables
 export HOME="${BACKUP_DATA_DIR}"
-export PATH="${PATH}:`pwd`:${PATH}:`pwd`/script"
+export PATH="${PATH}:/opt/bin"
 echo "${HOME}" > "/etc/container_environment/HOME"
 echo "${PATH}" > "/etc/container_environment/PATH"
 

@@ -3,7 +3,7 @@ set -e
 
 # Set environment
 PATTERN='.*\.rb$'
-COMMAND='/opt/backups/script/create-schedule.sh'
+COMMAND='/opt/bin/create-schedule.sh'
 
 # Load from existing schedules
 echo "Loading existing schedules..."
