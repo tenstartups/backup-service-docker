@@ -4,6 +4,7 @@ set -e
 # Set environment variables
 export BACKUP_DATA_DIR="${BACKUP_DATA_DIR:-/data}"
 export BACKUP_CONFIG_DIR="${BACKUP_CONFIG_DIR:-/etc/backups}"
+export BACKUP_LOCK_WAIT=${BACKUP_LOCK_WAIT:-300}
 export BACKUP_TRIGGER_ID="${BACKUP_TRIGGER_ID:-$1}"
 
 # Exit with error if BACKUP_TASK wasn't provided
@@ -15,7 +16,13 @@ fi
 echo "Triggering backup ${BACKUP_TRIGGER_ID}."
 mkdir -p "${BACKUP_DATA_DIR}/.tmp"
 pushd /opt/backup-service > /dev/null
-/usr/bin/flock --exclusive --wait 300 "${BACKUP_DATA_DIR}/.tmp/trigger-backup-${BACKUP_TRIGGER_ID}.lockfile" \
-  bundle exec backup perform --config-file="${BACKUP_CONFIG_DIR}/config.rb" --root-path="${BACKUP_DATA_DIR}" \
-  --trigger ${BACKUP_TRIGGER_ID}
+  if [ "${BACKUP_LOCK_WAIT}" = "0" ]; then
+    /usr/bin/flock --exclusive --nonblock "${BACKUP_DATA_DIR}/.tmp/trigger-backup-${BACKUP_TRIGGER_ID}.lockfile" \
+      bundle exec backup perform --config-file="${BACKUP_CONFIG_DIR}/config.rb" --root-path="${BACKUP_DATA_DIR}" \
+      --trigger ${BACKUP_TRIGGER_ID}
+  else
+    /usr/bin/flock --exclusive --wait ${BACKUP_LOCK_WAIT} "${BACKUP_DATA_DIR}/.tmp/trigger-backup-${BACKUP_TRIGGER_ID}.lockfile" \
+      bundle exec backup perform --config-file="${BACKUP_CONFIG_DIR}/config.rb" --root-path="${BACKUP_DATA_DIR}" \
+      --trigger ${BACKUP_TRIGGER_ID}
+  fi
 popd > /dev/null
