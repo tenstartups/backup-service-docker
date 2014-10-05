@@ -77,7 +77,7 @@ RUN \
   rm -rf ruby-*
 
 # Install ruby gems.
-RUN gem install activesupport backup rubygems-update whenever --no-ri --no-rdoc
+RUN gem install bundler --no-ri --no-rdoc
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -87,6 +87,10 @@ ADD . /opt/backup-service
 
 # Define working directory.
 WORKDIR /opt/backup-service
+
+# Bundle gem files
+RUN echo "gem: --no-ri --no-rdoc" > ${HOME}/.gemrc
+RUN bundle install --without development test --deployment
 
 # Move scripts into proper location.
 RUN \

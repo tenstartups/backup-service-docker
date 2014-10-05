@@ -15,5 +15,5 @@ CRONFILE=$(echo "/etc/cron.d/`basename ${SCHEDULE_CONFIG} | sed -En 's/\.rb$//p'
 
 # Write the whenever schedule to the cron definition
 printf "Creating cronfile '${CRONFILE}' from schedule '${SCHEDULE_CONFIG}'... "
-whenever --load-file "${SCHEDULE_CONFIG}" > "${CRONFILE}"
+bundle exec whenever --load-file "${SCHEDULE_CONFIG}" > "${CRONFILE}"
 echo "done."
