@@ -14,6 +14,8 @@ fi
 
 echo "Triggering backup ${BACKUP_TRIGGER_ID}."
 mkdir -p "${BACKUP_DATA_DIR}/.tmp"
+pushd /opt/backup-service > /dev/null
 /usr/bin/flock --exclusive --wait 300 "${BACKUP_DATA_DIR}/.tmp/trigger-backup-${BACKUP_TRIGGER_ID}.lockfile" \
   bundle exec backup perform --config-file="${BACKUP_CONFIG_DIR}/config.rb" --root-path="${BACKUP_DATA_DIR}" \
   --trigger ${BACKUP_TRIGGER_ID}
+popd > /dev/null
