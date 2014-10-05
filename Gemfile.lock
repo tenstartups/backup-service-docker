@@ -1,6 +1,7 @@
 GIT
   remote: git://github.com/marclennox/backup.git
-  revision: d605b2d59d38575d3544bba028d07fd57c740ef6
+  revision: 55de8e6f4d3697f3f4054844eedb7d2914939089
+  branch: feature/dropbox_sync
   specs:
     backup (4.0.6)
       addressable (= 2.3.5)
@@ -8,7 +9,7 @@ GIT
       buftok (= 0.2.0)
       builder (= 3.2.2)
       descendants_tracker (= 0.0.3)
-      dropbox-sdk (= 1.5.1)
+      dropbox-sdk (= 1.6.4)
       equalizer (= 0.0.9)
       excon (= 0.31.0)
       faraday (= 0.8.8)
@@ -58,7 +59,7 @@ GEM
     builder (3.2.2)
     chronic (0.10.2)
     descendants_tracker (0.0.3)
-    dropbox-sdk (1.5.1)
+    dropbox-sdk (1.6.4)
       json
     equalizer (0.0.9)
     excon (0.31.0)
