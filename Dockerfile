@@ -28,7 +28,7 @@ RUN apt-get update
 RUN apt-get -y install \
   build-essential \
   curl \
-  git-core \
+  git \
   inotify-tools \
   libcurl4-openssl-dev \
   libreadline-dev \
@@ -38,6 +38,7 @@ RUN apt-get -y install \
   libxslt1-dev \
   libyaml-dev \
   mysql-client \
+  nano \
   python python2.7 python3 \
   sqlite3 \
   wget \
