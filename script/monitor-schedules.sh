@@ -3,7 +3,7 @@ set -e
 
 # Set environment
 PATTERN='.*\.rb$'
-COMMAND='create-schedule.sh'
+COMMAND='create-schedule'
 
 # Load from existing schedules
 mkdir -p "${BACKUP_CONFIG_DIR}/schedules"

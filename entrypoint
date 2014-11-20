@@ -10,7 +10,7 @@ case "$1" in
   "backup"|"trigger" )
     # Extract the backup task argument and execute it
     shift
-    command="trigger-backup.sh $@"
+    command="trigger-backup $@"
     ;;
   * )
     command="$@"

@@ -83,21 +83,23 @@ RUN gem install bundler --no-ri --no-rdoc
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Add files to the container.
-ADD . /opt/backup-service
-
 # Define working directory.
 WORKDIR /opt/backup-service
 
 # Bundle gem files
+ADD Gemfile /opt/backup-service/Gemfile
+ADD Gemfile.lock /opt/backup-service/Gemfile.lock
 RUN echo "gem: --no-ri --no-rdoc" > ${HOME}/.gemrc
 RUN bundle install --without development test --deployment
+
+# Add files to the container.
+ADD . /opt/backup-service
 
 # Move scripts into proper location.
 RUN \
   mkdir -p /etc/service/schedule-updated && \
   mv ./script/schedule-updated.sh /etc/service/schedule-updated/run && \
-  mv ./script/*.sh /usr/local/bin && \
+  find ./script -regex '^.+\.sh$' -exec bash -c 'mv "{}" "$(echo {} | sed -En ''s/\.\\/script\\/\(.*\)\.sh/\\/usr\\/local\\/bin\\/\\1/p'')"' \; && \
   rm -rf ./script
 
 # Set environment
