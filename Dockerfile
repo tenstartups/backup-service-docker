@@ -39,7 +39,6 @@ RUN apt-get -y install \
   libyaml-dev \
   mysql-client \
   nano \
-  python python2.7 python3 \
   sqlite3 \
   wget \
   zlib1g-dev
