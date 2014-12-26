@@ -29,10 +29,12 @@ RUN apt-get update
 RUN apt-get -y install \
   build-essential \
   curl \
+  daemontools \
   git \
   inotify-tools \
   libcurl4-openssl-dev \
-  libreadline-dev \
+  libffi-dev \
+  libreadline6-dev \
   libssl-dev \
   libsqlite3-dev \
   libxml2-dev \
