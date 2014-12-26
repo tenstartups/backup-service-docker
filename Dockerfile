@@ -55,7 +55,7 @@ RUN \
 # Compile redis from official source
 RUN \
   cd /tmp && \
-  wget http://download.redis.io/releases/redis-2.8.13.tar.gz && \
+  wget http://download.redis.io/releases/redis-2.8.19.tar.gz && \
   tar -xzvf redis-*.tar.gz && \
   rm -f redis-*.tar.gz && \
   cd redis-* && \
@@ -67,7 +67,7 @@ RUN \
 # Compile ruby from source.
 RUN \
   cd /tmp && \
-  wget http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.5.tar.gz && \
+  wget http://ftp.ruby-lang.org/pub/ruby/2.2/ruby-2.2.0.tar.gz && \
   tar -xzvf ruby-*.tar.gz && \
   rm -f ruby-*.tar.gz && \
   cd ruby-* && \
