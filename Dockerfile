@@ -52,7 +52,7 @@ RUN \
   wget https://www.postgresql.org/media/keys/ACCC4CF8.asc && \
   apt-key add ACCC4CF8.asc && \
   apt-get update && \
-  apt-get -y install libpq-dev postgresql-client-9.3 postgresql-contrib-9.3
+  apt-get -y install libpq-dev postgresql-client-9.4 postgresql-contrib-9.4
 
 # Compile redis from official source
 RUN \
