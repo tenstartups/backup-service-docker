@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/marclennox/backup.git
-  revision: 2ef1d7f402883b22760f29378028e9adf40f826d
+  revision: 998e5115f9e8d6ccb46455859201f920c018269c
   branch: feature/dropbox_gdrive_sync
   specs:
     backup (4.1.6)
