@@ -14,7 +14,7 @@ MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 
 # Set environment variables.
 ENV DEBIAN_FRONTEND noninteractive
-ENV TERM xterm
+ENV TERM xterm-color
 
 # Regenerate SSH host keys. baseimage-docker does not contain any, so you
 # have to do that yourself. You may also comment out this instruction; the
