@@ -4,47 +4,42 @@
 # http://github.com/tenstartups/backup-service-docker
 #
 
-# Use phusion/baseimage as base image. To make your builds reproducible, make
-# sure you lock down to a specific version, not to `latest`!
-# See https://github.com/phusion/baseimage-docker/blob/master/Changelog.md for
-# a list of version numbers.
-FROM phusion/baseimage:latest
+FROM debian:jessie
 
 MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 
 # Set environment variables.
-ENV DEBIAN_FRONTEND noninteractive
-ENV TERM xterm-color
-
-# Regenerate SSH host keys. baseimage-docker does not contain any, so you
-# have to do that yourself. You may also comment out this instruction; the
-# init system will auto-generate one during boot.
-RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
-
-# Remove OS cron jobs
-RUN rm -f /etc/cron.daily/*
+ENV \
+  DEBIAN_FRONTEND=noninteractive \
+  TERM=xterm-color \
+  HOME=/home/backups \
+  BACKUP_CONFIG_DIR=/etc/backups \
+  BACKUP_DATA_DIR=/var/lib/backups
 
 # Install base packages.
-RUN apt-get update
-RUN apt-get -y install \
-  build-essential \
-  curl \
-  daemontools \
-  git \
-  inotify-tools \
-  libcurl4-openssl-dev \
-  libffi-dev \
-  libreadline6-dev \
-  libssl-dev \
-  libsqlite3-dev \
-  libxml2-dev \
-  libxslt1-dev \
-  libyaml-dev \
-  mysql-client \
-  nano \
-  sqlite3 \
-  wget \
-  zlib1g-dev
+RUN \
+  apt-get update && \
+  apt-get -y install \
+    build-essential \
+    cron \
+    curl \
+    daemontools \
+    git \
+    inotify-tools \
+    libcurl4-openssl-dev \
+    libffi-dev \
+    libreadline6-dev \
+    libssl-dev \
+    libsqlite3-dev \
+    libxml2-dev \
+    libxslt1-dev \
+    libyaml-dev \
+    mysql-client \
+    nano \
+    sqlite3 \
+    supervisor \
+    wget \
+    zlib1g-dev
 
 # Add postgresql client from official source.
 RUN \
@@ -86,33 +81,29 @@ RUN gem install bundler --no-ri --no-rdoc
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Define working directory.
-WORKDIR /opt/backup-service
+WORKDIR /opt/backups
+
+# Define mountable directories.
+VOLUME ["/home/backups", "/etc/backups", "/etc/schedule", "/var/lib/backups", "/var/log/backups"]
 
 # Bundle gem files
-ADD Gemfile /opt/backup-service/Gemfile
-ADD Gemfile.lock /opt/backup-service/Gemfile.lock
+ADD Gemfile /opt/backups/Gemfile
+ADD Gemfile.lock /opt/backups/Gemfile.lock
 RUN echo "gem: --no-ri --no-rdoc" > ${HOME}/.gemrc
 RUN bundle install --without development test --deployment
 
 # Add files to the container.
-ADD . /opt/backup-service
+ADD . /opt/backups
 
-# Move scripts into proper location.
+# Copy scripts and configuration into place
 RUN \
-  mkdir -p /etc/service/schedule-updated && \
-  mv ./script/schedule-updated.sh /etc/service/schedule-updated/run && \
   find ./script -regex '^.+\.sh$' -exec bash -c 'mv "{}" "$(echo {} | sed -En ''s/\.\\/script\\/\(.*\)\.sh/\\/usr\\/local\\/bin\\/\\1/p'')"' \; && \
-  rm -rf ./script
+  mv ./conf/supervisord.conf /etc/supervisor/conf.d && \
+  rm -rf ./script && \
+  rm -rf ./conf
 
-# Set environment
-ENV BACKUP_CONFIG_DIR /etc/backup-service
-ENV BACKUP_DATA_DIR /var/lib/backup-service
-
-# Define mountable directories.
-VOLUME ["/etc/backup-service", "/etc/schedule", "/var/lib/backup-service"]
-
-# Define entrypoint script.
+# Set the entrypoint script.
 ENTRYPOINT ["./entrypoint"]
 
-# Define default command.
-CMD ["/sbin/my_init"]
+# Set the default command.
+CMD ["/usr/bin/supervisord"]
