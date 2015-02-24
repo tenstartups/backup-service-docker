@@ -36,10 +36,14 @@ RUN \
     libyaml-dev \
     mysql-client \
     nano \
+    python \
+    python-setuptools \
     sqlite3 \
-    supervisor \
     wget \
     zlib1g-dev
+
+# Install supervisord using easy install.
+RUN easy_install supervisor
 
 # Add postgresql client from official source.
 RUN \
@@ -74,11 +78,11 @@ RUN \
   cd .. && \
   rm -rf ruby-*
 
-# Install ruby gems.
-RUN gem install bundler --no-ri --no-rdoc
-
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Install ruby gems.
+RUN gem install bundler --no-ri --no-rdoc
 
 # Define working directory.
 WORKDIR /opt/backups
@@ -98,7 +102,7 @@ ADD . /opt/backups
 # Copy scripts and configuration into place
 RUN \
   find ./script -regex '^.+\.sh$' -exec bash -c 'mv "{}" "$(echo {} | sed -En ''s/\.\\/script\\/\(.*\)\.sh/\\/usr\\/local\\/bin\\/\\1/p'')"' \; && \
-  mv ./conf/supervisord.conf /etc/supervisor/conf.d && \
+  mv ./conf/supervisord.conf /etc && \
   rm -rf ./script && \
   rm -rf ./conf
 
@@ -106,4 +110,4 @@ RUN \
 ENTRYPOINT ["./entrypoint"]
 
 # Set the default command.
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["/usr/local/bin/supervisord", "-c", "/etc/supervisord.conf"]
