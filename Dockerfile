@@ -23,11 +23,9 @@ RUN \
     build-essential \
     cron \
     curl \
-    daemontools \
     git \
     inotify-tools \
     libcurl4-openssl-dev \
-    libffi-dev \
     libreadline6-dev \
     libssl-dev \
     libsqlite3-dev \
@@ -72,7 +70,7 @@ RUN \
   tar -xzvf ruby-*.tar.gz && \
   rm -f ruby-*.tar.gz && \
   cd ruby-* && \
-  ./configure --disable-install-doc && \
+  ./configure --enable-shared --disable-install-doc && \
   make && \
   make install && \
   cd .. && \
