@@ -1,10 +1,10 @@
 #
-# Ruby backup gem service dockerfile
+# Ruby backup gem service docker image
 #
 # http://github.com/tenstartups/backup-service-docker
 #
 
-FROM debian:jessie
+FROM ruby:slim
 
 MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 
@@ -17,28 +17,18 @@ ENV \
   BACKUP_DATA_DIR=/var/lib/backups
 
 # Install base packages.
-RUN \
-  apt-get update && \
-  apt-get -y install \
-    build-essential \
-    cron \
-    curl \
-    git \
-    inotify-tools \
-    libcurl4-openssl-dev \
-    libreadline6-dev \
-    libssl-dev \
-    libsqlite3-dev \
-    libxml2-dev \
-    libxslt1-dev \
-    libyaml-dev \
-    mysql-client \
-    nano \
-    python \
-    python-setuptools \
-    sqlite3 \
-    wget \
-    zlib1g-dev
+RUN apt-get update && apt-get -y install \
+  build-essential \
+  cron \
+  curl \
+  git \
+  inotify-tools \
+  mysql-client \
+  nano \
+  python \
+  python-setuptools \
+  sqlite3 \
+  wget
 
 # Install supervisord using easy install.
 RUN easy_install supervisor
@@ -54,7 +44,7 @@ RUN \
 # Compile redis from official source
 RUN \
   cd /tmp && \
-  wget http://download.redis.io/releases/redis-2.8.19.tar.gz && \
+  wget http://download.redis.io/redis-stable.tar.gz && \
   tar -xzvf redis-*.tar.gz && \
   rm -f redis-*.tar.gz && \
   cd redis-* && \
@@ -62,19 +52,6 @@ RUN \
   make install && \
   cd .. && \
   rm -rf redis-*
-
-# Compile ruby from source.
-RUN \
-  cd /tmp && \
-  wget http://ftp.ruby-lang.org/pub/ruby/2.2/ruby-2.2.0.tar.gz && \
-  tar -xzvf ruby-*.tar.gz && \
-  rm -f ruby-*.tar.gz && \
-  cd ruby-* && \
-  ./configure --enable-shared --disable-install-doc && \
-  make && \
-  make install && \
-  cd .. && \
-  rm -rf ruby-*
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -97,11 +74,11 @@ RUN bundle install --without development test --deployment
 # Add files to the container.
 ADD . /opt/backups
 
-# Copy scripts and configuration into place
+# Copy scripts and configuration into place.
 RUN \
-  find ./script -regex '^.+\.sh$' -exec bash -c 'mv "{}" "$(echo {} | sed -En ''s/\.\\/script\\/\(.*\)\.sh/\\/usr\\/local\\/bin\\/\\1/p'')"' \; && \
-  mv ./conf/supervisord.conf /etc && \
+  find ./script -regextype posix-extended -regex '^.+\.(rb|sh)\s*$' -exec bash -c 'f=`basename "{}"`; mv -v "{}" "/usr/local/bin/${f%.*}"' \; && \
   rm -rf ./script && \
+  mv ./conf/supervisord.conf /etc && \
   rm -rf ./conf
 
 # Set the entrypoint script.
