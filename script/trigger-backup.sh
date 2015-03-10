@@ -8,7 +8,7 @@ export BACKUP_LOCK_WAIT=${BACKUP_LOCK_WAIT:-300}
 export BACKUP_TRIGGER_ID="${BACKUP_TRIGGER_ID:-$1}"
 
 # Exit with error if BACKUP_TASK wasn't provided
-if [ "${BACKUP_TRIGGER_ID}" == "" ]; then
+if [ -z "${BACKUP_TRIGGER_ID}" ]; then
   echo "The backup task must be provided either with the BACKUP_TRIGGER_ID environment variable or the first argument."
   exit 1
 fi
