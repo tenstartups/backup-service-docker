@@ -15,6 +15,6 @@ CRONFILE=$(echo "/etc/cron.d/`basename ${SCHEDULE_CONFIG} | sed -En 's/\.rb$//p'
 
 # Write the whenever schedule to the cron definition
 echo "Creating cronfile '${CRONFILE}' from schedule '${SCHEDULE_CONFIG}'... "
-pushd /opt/backups > /dev/null
+pushd /home/backups > /dev/null
 bundle exec whenever --load-file "${SCHEDULE_CONFIG}" > "${CRONFILE}"
 popd > /dev/null

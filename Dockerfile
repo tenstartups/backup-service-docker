@@ -26,12 +26,15 @@ RUN apt-get update && apt-get -y install \
   mysql-client \
   nano \
   python \
+  python-pip \
   python-setuptools \
   sqlite3 \
   wget
 
-# Install supervisord using easy install.
-RUN easy_install supervisor
+# Install supervisord and plugins.
+RUN \
+  easy_install supervisor && \
+  pip install supervisor-stdout
 
 # Add postgresql client from official source.
 RUN \
@@ -57,22 +60,16 @@ RUN \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install ruby gems.
-RUN gem install bundler --no-ri --no-rdoc
+RUN gem install backup listen --no-ri --no-rdoc
 
 # Define working directory.
-WORKDIR /opt/backups
+WORKDIR /home/backups
 
 # Define mountable directories.
 VOLUME ["/home/backups", "/etc/backups", "/etc/schedule", "/var/lib/backups", "/var/log/backups"]
 
-# Bundle gem files
-ADD Gemfile /opt/backups/Gemfile
-ADD Gemfile.lock /opt/backups/Gemfile.lock
-RUN echo "gem: --no-ri --no-rdoc" > ${HOME}/.gemrc
-RUN bundle install --without development test --deployment
-
 # Add files to the container.
-ADD . /opt/backups
+ADD . /home/backups
 
 # Copy scripts and configuration into place.
 RUN \
