@@ -21,6 +21,7 @@ RUN apt-get update && apt-get -y install \
   build-essential \
   cron \
   curl \
+  expect \
   git \
   inotify-tools \
   mysql-client \
