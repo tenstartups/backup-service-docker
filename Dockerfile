@@ -61,7 +61,14 @@ RUN \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install ruby gems.
-RUN gem install backup listen whenever --no-ri --no-rdoc
+RUN \
+  cd /tmp && \
+  git clone https://github.com/tenstartups/backup.git && \
+  cd backup && \
+  git checkout package_with_storage_id && \
+  gem build backup.gemspec && \
+  gem install backup --no-ri --no-rdoc && \
+  gem install listen whenever --no-ri --no-rdoc
 
 # Define working directory.
 WORKDIR /home/backups
