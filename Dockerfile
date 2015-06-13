@@ -60,7 +60,7 @@ RUN \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install ruby gems.
-RUN gem install backup listen --no-ri --no-rdoc
+RUN gem install backup listen whenever --no-ri --no-rdoc
 
 # Define working directory.
 WORKDIR /home/backups
