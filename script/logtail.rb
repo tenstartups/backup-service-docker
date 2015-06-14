@@ -2,27 +2,20 @@
 
 require 'listen'
 
-# Redefine system command
-@original_system = method(:system)
-define_method(:system) do |*args|
-  @original_system.call(*args)
-  exit 1 unless $?.exitstatus == 0
-end
-
 # Extract arguments
 log_directory = ENV['LOG_DIRECTORY'] || ARGV[0]
 log_pattern = ENV['LOG_PATTERN'] || ARGV[1] || '\\.log'
 
 # Check for required parameters
 if log_directory.nil? || log_directory == ''
-  system "error 'Missing required environment variable ''`LOG_DIRECTORY`'''"
+  system "Missing required environment variable 'LOG_DIRECTORY'"
   exit 1
 end
 
 puts "Watching for logs at '#{log_directory}' matching '#{log_pattern}' regular expression pattern..."
 
 # Create the listener loop for new log files in the specified directory
-listener = Listen.to(log_directory, only: /#{log_pattern}/, force_polling: true) do |_modified, added, removed|
+listener = Listen.to(log_directory, only: /#{log_pattern}/, force_polling: true) do |_modified, added, _removed|
   # Handle new log files
   added.each do |logfile|
     Thread.new do
