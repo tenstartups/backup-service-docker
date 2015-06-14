@@ -18,13 +18,13 @@ mkdir -p "${BACKUP_DATA_DIR}/.tmp"
 pushd /home/backups > /dev/null
   if [ "${BACKUP_LOCK_WAIT}" = "0" ]; then
     /usr/bin/flock --exclusive --nonblock "${BACKUP_DATA_DIR}/.tmp/trigger-backup-${BACKUP_TRIGGER_ID}.lockfile" \
-      /usr/local/bin/unbuffer /usr/local/bundle/bin/backup perform \
+      /usr/bin/unbuffer /usr/local/bundle/bin/backup perform \
       --config-file="${BACKUP_CONFIG_DIR}/config.rb" \
       --root-path="${BACKUP_DATA_DIR}" \
       --trigger ${BACKUP_TRIGGER_ID}
   else
     /usr/bin/flock --exclusive --wait ${BACKUP_LOCK_WAIT} "${BACKUP_DATA_DIR}/.tmp/trigger-backup-${BACKUP_TRIGGER_ID}.lockfile" \
-      /usr/local/bin/unbuffer /usr/local/bundle/bin/backup perform \
+      /usr/bin/unbuffer /usr/local/bundle/bin/backup perform \
       --config-file="${BACKUP_CONFIG_DIR}/config.rb" \
       --root-path="${BACKUP_DATA_DIR}" \
       --trigger ${BACKUP_TRIGGER_ID}
