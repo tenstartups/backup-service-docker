@@ -74,7 +74,7 @@ RUN \
 WORKDIR /home/backups
 
 # Define mountable directories.
-VOLUME ["/home/backups", "/etc/backups", "/etc/schedule", "/var/lib/backups", "/var/log/backups"]
+VOLUME ["/home/backups", "/etc/backups", "/etc/schedule", "/var/lib/backups", "/var/log/backups", "/var/lib/devcron"]
 
 # Add files to the container.
 ADD . /home/backups
