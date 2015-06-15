@@ -20,22 +20,11 @@ ENV \
 RUN apt-get update && apt-get -y install \
   build-essential \
   curl \
-  expect \
   git \
-  mercurial \
   mysql-client \
   nano \
-  python \
-  python-pip \
-  python-setuptools \
   sqlite3 \
   wget
-
-# Install supervisord and plugins.
-RUN \
-  easy_install supervisor && \
-  pip install supervisor-stdout && \
-  pip install -e hg+https://bitbucket.org/dbenamy/devcron#egg=devcron
 
 # Add postgresql client from official source.
 RUN \
@@ -67,14 +56,13 @@ RUN \
   cd backup && \
   git checkout package_with_storage_id && \
   gem build backup.gemspec && \
-  gem install backup --no-ri --no-rdoc && \
-  gem install listen whenever --no-ri --no-rdoc
+  gem install backup --no-ri --no-rdoc
 
 # Define working directory.
 WORKDIR /home/backups
 
 # Define mountable directories.
-VOLUME ["/home/backups", "/etc/backups", "/etc/schedule", "/var/lib/backups", "/var/log/backups", "/var/lib/devcron"]
+VOLUME ["/home/backups", "/etc/backups", "/var/lib/backups", "/var/log/backups"]
 
 # Add files to the container.
 ADD . /home/backups
@@ -82,12 +70,7 @@ ADD . /home/backups
 # Copy scripts and configuration into place.
 RUN \
   find ./script -regextype posix-extended -regex '^.+\.(rb|sh)\s*$' -exec bash -c 'f=`basename "{}"`; mv -v "{}" "/usr/local/bin/${f%.*}"' \; && \
-  rm -rf ./script && \
-  mv ./conf/supervisord.conf /etc && \
-  rm -rf ./conf
+  rm -rf ./script
 
 # Set the entrypoint script.
 ENTRYPOINT ["./entrypoint"]
-
-# Set the default command.
-CMD ["/usr/local/bin/supervisord", "-c", "/etc/supervisord.conf"]
