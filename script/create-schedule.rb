@@ -16,9 +16,12 @@ unless File.exist?(schedule_config)
 end
 
 # Set the cron file
-cron_file = File.join('/etc/cron.d', File.basename(schedule_config, File.extname(schedule_config)))
+cron_file = File.join('/var/lib/devcron', File.basename(schedule_config, File.extname(schedule_config)))
 
 # Write the whenever schedule to the cron definition
 puts "Creating cronfile '#{cron_file}' from schedule '#{schedule_config}'... "
 cron_schedule = `whenever --load-file '#{schedule_config}'`
 File.open(cron_file, 'w') { |f| f.write(cron_schedule) }
+
+# Execute the python devcron
+system('devcron.py', cron_file)

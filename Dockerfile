@@ -19,11 +19,10 @@ ENV \
 # Install base packages.
 RUN apt-get update && apt-get -y install \
   build-essential \
-  cron \
   curl \
   expect \
   git \
-  inotify-tools \
+  mercurial \
   mysql-client \
   nano \
   python \
@@ -35,7 +34,8 @@ RUN apt-get update && apt-get -y install \
 # Install supervisord and plugins.
 RUN \
   easy_install supervisor && \
-  pip install supervisor-stdout
+  pip install supervisor-stdout && \
+  pip install -e hg+https://bitbucket.org/dbenamy/devcron#egg=devcron
 
 # Add postgresql client from official source.
 RUN \
