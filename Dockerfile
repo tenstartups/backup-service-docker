@@ -19,19 +19,12 @@ ENV \
 # Install base packages.
 RUN apt-get update && apt-get -y install \
   build-essential \
-  cron \
   curl \
   git \
-  inotify-tools \
   mysql-client \
   nano \
-  python \
-  python-setuptools \
   sqlite3 \
   wget
-
-# Install supervisord using easy install.
-RUN easy_install supervisor
 
 # Add postgresql client from official source.
 RUN \
@@ -57,32 +50,27 @@ RUN \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install ruby gems.
-RUN gem install bundler --no-ri --no-rdoc
+RUN \
+  cd /tmp && \
+  git clone https://github.com/tenstartups/backup.git && \
+  cd backup && \
+  git checkout package_with_storage_id && \
+  gem build backup.gemspec && \
+  gem install backup --no-ri --no-rdoc
 
 # Define working directory.
-WORKDIR /opt/backups
+WORKDIR /home/backups
 
 # Define mountable directories.
-VOLUME ["/home/backups", "/etc/backups", "/etc/schedule", "/var/lib/backups", "/var/log/backups"]
-
-# Bundle gem files
-ADD Gemfile /opt/backups/Gemfile
-ADD Gemfile.lock /opt/backups/Gemfile.lock
-RUN echo "gem: --no-ri --no-rdoc" > ${HOME}/.gemrc
-RUN bundle install --without development test --deployment
+VOLUME ["/home/backups", "/etc/backups", "/var/lib/backups", "/var/log/backups"]
 
 # Add files to the container.
-ADD . /opt/backups
+ADD . /home/backups
 
 # Copy scripts and configuration into place.
 RUN \
   find ./script -regextype posix-extended -regex '^.+\.(rb|sh)\s*$' -exec bash -c 'f=`basename "{}"`; mv -v "{}" "/usr/local/bin/${f%.*}"' \; && \
-  rm -rf ./script && \
-  mv ./conf/supervisord.conf /etc && \
-  rm -rf ./conf
+  rm -rf ./script
 
 # Set the entrypoint script.
 ENTRYPOINT ["./entrypoint"]
-
-# Set the default command.
-CMD ["/usr/local/bin/supervisord", "-c", "/etc/supervisord.conf"]
