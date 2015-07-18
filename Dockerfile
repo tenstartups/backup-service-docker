@@ -65,13 +65,8 @@ WORKDIR /home/backups
 VOLUME ["/home/backups", "/etc/backups", "/var/lib/backups", "/var/log/backups"]
 
 # Add files to the container.
-ADD . /home/backups
-
-# Copy scripts and configuration into place.
-RUN \
-  find ./script -type f -name '*.sh' | while read f; do echo 'n' | cp -iv "$f" "/usr/local/bin/`basename ${f%.sh}`" 2>/dev/null; done && \
-  find ./script -type f -name '*.rb' | while read f; do echo 'n' | cp -iv "$f" "/usr/local/bin/`basename ${f%.rb}`" 2>/dev/null; done && \
-  rm -rf ./script
+COPY entrypoint.sh /entrypoint
+COPY backup.sh /usr/local/bin/backup
 
 # Set the entrypoint script.
-ENTRYPOINT ["./entrypoint"]
+ENTRYPOINT ["/entrypoint"]

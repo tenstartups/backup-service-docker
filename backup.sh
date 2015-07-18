@@ -4,7 +4,7 @@ set -e
 # Set environment variables
 export BACKUP_DATA_DIR="${BACKUP_DATA_DIR:-/var/lib/backups}"
 export BACKUP_CONFIG_DIR="${BACKUP_CONFIG_DIR:-/etc/backups}"
-export BACKUP_TRIGGER_ID="${BACKUP_TRIGGER_ID:-$1}"
+export BACKUP_TRIGGER_ID="${1:-$BACKUP_TRIGGER_ID}"
 
 # Exit with error if BACKUP_TASK wasn't provided
 if [ -z "${BACKUP_TRIGGER_ID}" ]; then
