@@ -8,7 +8,7 @@ export BACKUP_TRIGGER_ID="${1:-$BACKUP_TRIGGER_ID}"
 
 # Exit with error if BACKUP_TASK wasn't provided
 if [ -z "${BACKUP_TRIGGER_ID}" ]; then
-  echo "The backup task must be provided either with the BACKUP_TRIGGER_ID environment variable or the first argument."
+  echo >&2 "The backup task must be provided either with the BACKUP_TRIGGER_ID environment variable or the first argument."
   exit 1
 fi
 
