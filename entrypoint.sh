@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 
-/usr/local/bin/backup "$@"
+/usr/local/bin/perform-backup "$@"

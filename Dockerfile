@@ -37,7 +37,7 @@ VOLUME ["/home/backups", "/etc/backups", "/var/lib/backups", "/var/log/backups"]
 
 # Add files to the container.
 COPY entrypoint.sh /docker-entrypoint
-COPY backup.sh /usr/local/bin/backup
+COPY perform-backup.sh /usr/local/bin/perform-backup
 
 # Set the entrypoint script.
 ENTRYPOINT ["/docker-entrypoint"]
