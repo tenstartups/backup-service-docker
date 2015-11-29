@@ -17,7 +17,7 @@ ENV \
 
 # Install base packages.
 RUN \
-  apk --update add git libxslt-dev libxml2-dev mysql-client postgresql-client redis sqlite zlib-dev && \
+  apk --update add git libxslt-dev libxml2-dev mysql-client postgresql redis sqlite zlib-dev && \
   rm -rf /var/cache/apk/*
 
 # Install ruby gems.
