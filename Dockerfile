@@ -17,6 +17,7 @@ ENV \
 
 # Install base packages.
 RUN \
+  echo 'http://dl-4.alpinelinux.org/alpine/edge/main' >> /etc/apk/repositories && \
   apk --update add git libxslt-dev libxml2-dev mysql-client postgresql redis sqlite zlib-dev && \
   rm -rf /var/cache/apk/*
 
