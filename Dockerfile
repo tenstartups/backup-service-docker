@@ -19,7 +19,7 @@ RUN \
   echo 'http://dl-4.alpinelinux.org/alpine/edge/main' >> /etc/apk/repositories && \
   apk --update add build-base git libxml2-dev libxslt-dev mysql-client postgresql \
                redis ruby ruby-bigdecimal ruby-bundler ruby-dev ruby-irb \
-               ruby-io-console ruby-json ruby-nokogiri sqlite zlib-dev && \
+               ruby-io-console ruby-json ruby-nokogiri sqlite tar zlib-dev && \
   rm -rf /var/cache/apk/*
 
 # Install ruby gems.
