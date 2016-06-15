@@ -29,7 +29,7 @@ RUN \
   cd backup && \
   git checkout package_with_storage_id && \
   gem build backup.gemspec && \
-  gem install backup --no-document -- --use-system-libraries && \
+  gem install backup --no-document && \
   cd .. && \
   rm -rf backup
 
