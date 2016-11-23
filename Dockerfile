@@ -16,7 +16,6 @@ ENV \
 
 # Install base packages.
 RUN \
-  echo 'http://dl-cdn.alpinelinux.org/alpine/edge/main' >> /etc/apk/repositories && \
   apk --update add \
     build-base \
     git \
@@ -46,7 +45,7 @@ RUN \
   cd backup && \
   git checkout package_with_storage_id && \
   gem build backup.gemspec && \
-  gem install backup --no-document -- --use-system-libraries && \
+  gem install backup --no-document && \
   gem install backup --local --ignore-dependencies --no-document && \
   cd .. && \
   rm -rf backup
