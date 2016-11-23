@@ -12,7 +12,8 @@ MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 ENV \
   HOME=/home/backups \
   BACKUP_CONFIG_DIR=/etc/backups \
-  BACKUP_DATA_DIR=/var/lib/backups
+  BACKUP_DATA_DIR=/var/lib/backups \
+  PG_VERSION=9.6.1
 
 # Install base packages.
 RUN \
@@ -22,7 +23,8 @@ RUN \
     libxml2-dev \
     libxslt-dev \
     mysql-client \
-    postgresql \
+    openssl-dev \
+    readline-dev \
     redis \
     rsync \
     ruby \
@@ -37,6 +39,18 @@ RUN \
     tar \
     zlib-dev && \
   rm -rf /var/cache/apk/*
+
+# Install postgresql
+RUN wget ftp://ftp.postgresql.org/pub/source/v$PG_VERSION/postgresql-$PG_VERSION.tar.bz2 -O /tmp/postgresql-$PG_VERSION.tar.bz2 && \
+    tar xvfj /tmp/postgresql-$PG_VERSION.tar.bz2 -C /tmp && \
+    cd /tmp/postgresql-$PG_VERSION && \
+    ./configure --enable-integer-datetimes --enable-thread-safety --prefix=/usr/local --with-libedit-preferred --with-openssl && \
+    make world && \
+    make install world && \
+    make -C contrib install && \
+    cd /tmp/postgresql-$PG_VERSION/contrib && \
+    make && make install && \
+    rm -r /tmp/postgresql-$PG_VERSION*
 
 # Install ruby gems.
 RUN \
