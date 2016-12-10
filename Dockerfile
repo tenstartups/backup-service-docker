@@ -41,16 +41,16 @@ RUN \
   rm -rf /var/cache/apk/*
 
 # Install postgresql
-RUN wget ftp://ftp.postgresql.org/pub/source/v$PG_VERSION/postgresql-$PG_VERSION.tar.bz2 -O /tmp/postgresql-$PG_VERSION.tar.bz2 && \
-    tar xvfj /tmp/postgresql-$PG_VERSION.tar.bz2 -C /tmp && \
-    cd /tmp/postgresql-$PG_VERSION && \
+RUN wget ftp://ftp.postgresql.org/pub/source/v${PG_VERSION}/postgresql-${PG_VERSION}.tar.bz2 -O /tmp/postgresql-${PG_VERSION}.tar.bz2 && \
+    tar xvfj /tmp/postgresql-${PG_VERSION}.tar.bz2 -C /tmp && \
+    cd /tmp/postgresql-${PG_VERSION} && \
     ./configure --enable-integer-datetimes --enable-thread-safety --prefix=/usr/local --with-libedit-preferred --with-openssl && \
     make world && \
     make install world && \
     make -C contrib install && \
-    cd /tmp/postgresql-$PG_VERSION/contrib && \
+    cd /tmp/postgresql-${PG_VERSION}/contrib && \
     make && make install && \
-    rm -r /tmp/postgresql-$PG_VERSION*
+    rm -r /tmp/postgresql-${PG_VERSION}*
 
 # Install ruby gems.
 RUN \
