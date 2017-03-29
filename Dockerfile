@@ -13,7 +13,7 @@ ENV \
   HOME=/home/backups \
   BACKUP_CONFIG_DIR=/etc/backups \
   BACKUP_DATA_DIR=/var/lib/backups \
-  PG_VERSION=9.6.1
+  PG_VERSION=9.6.2
 
 # Install base packages.
 RUN \
