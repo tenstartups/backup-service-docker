@@ -12,21 +12,19 @@ MAINTAINER Marc Lennox <marc.lennox@gmail.com>
 ENV \
   HOME=/home/backups \
   BACKUP_CONFIG_DIR=/etc/backups \
-  BACKUP_DATA_DIR=/var/lib/backups \
-  PG_VERSION=9.6.2
+  BACKUP_DATA_DIR=/var/lib/backups
 
 # Install base packages.
 RUN \
   apk --update add \
     build-base \
-    git \
+    libressl-dev \
     libxml2-dev \
     libxslt-dev \
     mysql-client \
-    openssl-dev \
+    postgresql \
     readline-dev \
     redis \
-    rsync \
     ruby \
     ruby-bigdecimal \
     ruby-bundler \
@@ -34,35 +32,16 @@ RUN \
     ruby-irb \
     ruby-io-console \
     ruby-json \
+    ruby-nokogiri \
     ruby-rake \
     sqlite \
     tar \
     zlib-dev && \
   rm -rf /var/cache/apk/*
 
-# Install postgresql
-RUN wget ftp://ftp.postgresql.org/pub/source/v${PG_VERSION}/postgresql-${PG_VERSION}.tar.bz2 -O /tmp/postgresql-${PG_VERSION}.tar.bz2 && \
-    tar xvfj /tmp/postgresql-${PG_VERSION}.tar.bz2 -C /tmp && \
-    cd /tmp/postgresql-${PG_VERSION} && \
-    ./configure --enable-integer-datetimes --enable-thread-safety --prefix=/usr/local --with-libedit-preferred --with-openssl && \
-    make world && \
-    make install world && \
-    make -C contrib install && \
-    cd /tmp/postgresql-${PG_VERSION}/contrib && \
-    make && make install && \
-    rm -r /tmp/postgresql-${PG_VERSION}*
-
 # Install ruby gems.
 RUN \
-  cd /tmp && \
-  git clone https://github.com/tenstartups/backup.git && \
-  cd backup && \
-  git checkout package_with_storage_id && \
-  gem build backup.gemspec && \
-  gem install backup --no-document && \
-  gem install backup --local --ignore-dependencies --no-document && \
-  cd .. && \
-  rm -rf backup
+  gem install backup --no-document --version=5.0.0.beta.1
 
 # Define working directory.
 WORKDIR /home/backups
